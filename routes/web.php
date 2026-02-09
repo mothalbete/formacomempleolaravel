@@ -7,6 +7,16 @@ Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/empresa/register', function () {
+    $role = 'empresa';
+    return view('auth.register', compact('role'));
+})->name('empresa.register');
+
+Route::get('/candidato/register', function () {
+    $role = 'candidato';
+    return view('auth.register', compact('role'));
+})->name('candidato.register'); 
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -33,9 +43,9 @@ Route::middleware([
     Route::middleware('role:empresa')->group(function () {
         Route::get('/empresa', fn() => view('empresa.dashboard'))->name('empresa.dashboard');
     });
-      Route::middleware('role:candidato')->group(function () {
+    Route::middleware('role:candidato')->group(function () {
         Route::get('/candidato', fn() => view('candidato.dashboard'))->name('candidato.dashboard');
     });
 
-  
+
 });

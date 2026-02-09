@@ -22,12 +22,10 @@
             </div>
 
             <div class="mt-4">
-                <x-label for="role" value="{{ __('role') }}" />
-                <x-input id="role" class="block mt-1 w-full" type="text" name="role" :value="old('role')" required
-                    autocomplete="role" />
+                <input type="hidden" name="role" value="{{ $role }}">
             </div>
 
-            
+
             <div class="mt-4">
                 <x-label for="password" value="{{ __('Password') }}" />
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
