@@ -10,7 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\UserRole;
-use App\Models\Empresa
+use App\Models\Empresa;
 
 class User extends Authenticatable
 {
