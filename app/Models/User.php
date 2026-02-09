@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
 use App\Enums\UserRole;
+use App\Models\Empresa
 
 class User extends Authenticatable
 {
@@ -67,4 +68,8 @@ class User extends Authenticatable
             'role' => UserRole::class,
         ];
     }
+    public function empresa()
+{
+    return $this->belongsTo(Empresa::class, 'empresa_id');
+}
 }

@@ -42,7 +42,8 @@ Route::middleware([
 
     Route::middleware('role:empresa')->group(function () {
         Route::get('/empresa', fn() => view('empresa.dashboard'))->name('empresa.dashboard');
-    });
+        Route::get('/empresa/crear-oferta', fn() => view('empresa.crear-oferta'))->name('empresa.crear-oferta');
+        });
     Route::middleware('role:candidato')->group(function () {
         Route::get('/candidato', fn() => view('candidato.dashboard'))->name('candidato.dashboard');
     });

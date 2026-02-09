@@ -5,6 +5,16 @@
         </x-slot>
 
         <x-validation-errors class="mb-4" />
+        <!--Si role empresa mostrar mensaje de registro para empresas, si role candidato mostrar mensaje de registro para candidatos-->
+        @if ($role === 'empresa')
+            <div class="mb-4 font-medium text-sm text-green-600">
+                {{ __('Registrarse como empresa para publicar ofertas y gestionar candidatos.') }}
+            </div>
+        @elseif ($role === 'candidato')
+            <div class="mb-4 font-medium text-sm text-green-600">       
+                {{ __('Registrarse como candidato para crear tu perfil, adjuntar tu CV y acceder a ofertas.') }}
+            </div>
+        @endif
 
         <form method="POST" action="{{ route('register') }}">
             @csrf
