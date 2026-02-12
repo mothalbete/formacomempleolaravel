@@ -2,21 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use App\Enums\UserRole;
-use App\Models\Empresa;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
-
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
     use HasProfilePhoto;
     use Notifiable;
@@ -24,20 +19,16 @@ class User extends Authenticatable
 
     /**
      * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role',
+        'role', // ← IMPORTANTE
     ];
 
     /**
      * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -48,28 +39,36 @@ class User extends Authenticatable
 
     /**
      * The accessors to append to the model's array form.
-     *
-     * @var array<int, string>
      */
     protected $appends = [
         'profile_photo_url',
     ];
 
     /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
+     * The attributes that should be cast.
      */
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'role' => UserRole::class,
         ];
     }
+
+    /**
+     * Relación: un usuario tiene una empresa.
+     */
     public function empresa()
-{
-    return $this->belongsTo(Empresa::class, 'empresa_id');
-}
+    {
+        return $this->hasOne(Empresa::class);
+    }
+
+    /**
+     * Relación: un usuario tiene un perfil de candidato.
+     * IMPORTANTE: especificamos la clave foránea 'idusuario'
+     */
+    public function candidato()
+    {
+        return $this->hasOne(Candidato::class, 'idusuario');
+    }
 }

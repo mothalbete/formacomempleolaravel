@@ -1,48 +1,80 @@
-<x-guest-layout>
-    <x-authentication-card>
-        <x-slot name="logo">
-            <x-authentication-card-logo />
-        </x-slot>
+<div class="max-w-md mx-auto bg-white border border-slate-200 rounded-2xl p-8 shadow-sm">
 
-        <x-validation-errors class="mb-4" />
+    {{-- Logo opcional --}}
+    <div class="flex justify-center mb-6">
+        <x-authentication-card-logo />
+    </div>
 
-        @session('status')
-            <div class="mb-4 font-medium text-sm text-green-600">
-                {{ $value }}
-            </div>
-        @endsession
+    {{-- Errores --}}
+    <x-validation-errors class="mb-4" />
 
-        <form method="POST" action="{{ route('login') }}">
-            @csrf
+    {{-- Mensaje de estado (por ejemplo, contraseña restablecida) --}}
+    @if (session('status'))
+        <div class="mb-4 font-medium text-sm text-green-600">
+            {{ session('status') }}
+        </div>
+    @endif
 
-            <div>
-                <x-label for="email" value="{{ __('Email') }}" />
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            </div>
+    <form method="POST" action="{{ route('login') }}" class="space-y-6">
+        @csrf
 
-            <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
-            </div>
+        {{-- Email --}}
+        <div>
+            <x-label for="email" value="Correo electrónico" class="font-semibold text-slate-700" />
+            <x-input id="email"
+                     class="mt-1 block w-full rounded-xl border-slate-300"
+                     type="email"
+                     name="email"
+                     :value="old('email')"
+                     required
+                     autofocus
+                     autocomplete="username" />
+        </div>
 
-            <div class="block mt-4">
-                <label for="remember_me" class="flex items-center">
-                    <x-checkbox id="remember_me" name="remember" />
-                    <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
-                </label>
-            </div>
+        {{-- Contraseña --}}
+        <div>
+            <x-label for="password" value="Contraseña" class="font-semibold text-slate-700" />
+            <x-input id="password"
+                     class="mt-1 block w-full rounded-xl border-slate-300"
+                     type="password"
+                     name="password"
+                     required
+                     autocomplete="current-password" />
+        </div>
 
-            <div class="flex items-center justify-end mt-4">
+        {{-- Recordarme --}}
+        <div class="flex items-center gap-2">
+            <x-checkbox id="remember_me" name="remember" />
+            <label for="remember_me" class="text-sm text-slate-600">Recordarme</label>
+        </div>
+
+        {{-- Acciones --}}
+        <div class="flex items-center justify-between pt-2">
+
+            {{-- Cambiar a pestaña de registro --}}
+            <button type="button"
+                    @click="$dispatch('switch-tab', { tab: 'register' })"
+                    class="text-sm text-slate-600 hover:text-slate-900 underline">
+                Crear cuenta
+            </button>
+
+            <div class="flex items-center gap-4">
+
+                {{-- Recuperar contraseña --}}
                 @if (Route::has('password.request'))
-                    <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('password.request') }}">
-                        {{ __('Forgot your password?') }}
+                    <a href="{{ route('password.request') }}"
+                       class="text-sm text-slate-600 hover:text-slate-900 underline">
+                        ¿Olvidaste tu contraseña?
                     </a>
                 @endif
 
-                <x-button class="ms-4">
-                    {{ __('Log in') }}
+                {{-- Botón login --}}
+                <x-button class="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800">
+                    Acceder
                 </x-button>
             </div>
-        </form>
-    </x-authentication-card>
-</x-guest-layout>
+
+        </div>
+
+    </form>
+</div>

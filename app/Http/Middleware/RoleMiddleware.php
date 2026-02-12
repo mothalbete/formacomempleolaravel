@@ -4,23 +4,30 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next, ...$roles)
     {
         $user = $request->user();
-        if (!$user) abort(401);
 
-        $role = is_object($user->role) ? $user->role->value : $user->role;
+        if (!$user) {
+            abort(401);
+        }
 
-        if (!in_array($role, $roles, true)) abort(403);
+        // Si el usuario NO tiene rol, solo puede ir a elegir rol
+        if (!$user->role) {
+            if ($request->routeIs('choose.role') || $request->routeIs('choose.role.store')) {
+                return $next($request);
+            }
+
+            return redirect()->route('choose.role');
+        }
+
+        // Rol normal
+        if (!in_array($user->role, $roles, true)) {
+            abort(403);
+        }
 
         return $next($request);
     }

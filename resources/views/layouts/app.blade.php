@@ -13,6 +13,7 @@
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <script src="//unpkg.com/alpinejs" defer></script>
 
         <!-- Styles -->
         @livewireStyles
@@ -37,8 +38,10 @@
                 {{ $slot }}
             </main>
         </div>
-
+        @stack('footer')
         @stack('modals')
+
+        
 
         @livewireScripts
     </body>
