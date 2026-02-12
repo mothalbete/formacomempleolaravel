@@ -119,6 +119,13 @@ Route::middleware(['auth', 'verified', 'role:empresa'])->group(function () {
 
     Route::put('/empresa/ofertas/{oferta}', [EmpresaOfertaController::class, 'update'])
         ->name('empresa.ofertas.update');
+
+    Route::get(
+        '/empresa/ofertas/{oferta}/postulaciones',
+        [EmpresaOfertaController::class, 'postulaciones']
+    )->name('empresa.ofertas.postulaciones');
+
+
 });
 
 

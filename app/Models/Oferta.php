@@ -58,4 +58,14 @@ class Oferta extends Model
     {
         return $this->belongsTo(Puesto::class, 'idpuesto');
     }
+
+    public function candidatos()
+    {
+        return $this->belongsToMany(
+            Candidato::class,
+            'candidato_oferta',
+            'oferta_id',
+            'candidato_id'
+        )->withTimestamps();
+    }
 }

@@ -1,6 +1,30 @@
 <x-app-layout>
 
-<div class="max-w-6xl mx-auto py-14 px-6 md:px-10" x-data="{ tab: 'crear' }">
+<div 
+    class="max-w-6xl mx-auto py-14 px-6 md:px-10"
+    x-data="{
+        tab: 'crear',
+        open: null,
+        postulaciones: {},
+        showCvModal: false,
+        cvUrl: null,
+
+        loadPostulaciones(id) {
+            if (this.postulaciones[id]) return;
+
+            fetch(`/empresa/ofertas/${id}/postulaciones`)
+                .then(res => res.json())
+                .then(data => {
+                    this.postulaciones[id] = data;
+                });
+        },
+
+        openCv(url) {
+            this.cvUrl = url;
+            this.showCvModal = true;
+        }
+    }"
+>
 
     {{-- Encabezado --}}
     <header class="space-y-3 mb-10">
@@ -10,7 +34,7 @@
         </p>
     </header>
 
-    {{-- Pestañas estilo tarjetas --}}
+    {{-- Pestañas --}}
     <nav class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
 
         <button 
@@ -45,7 +69,7 @@
 
     </nav>
 
-    {{-- CONTENIDO DE LAS PESTAÑAS --}}
+    {{-- CONTENIDO --}}
     <div class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
 
         {{-- Crear oferta --}}
@@ -66,6 +90,30 @@
             @include('empresa.perfil.form-editar')
         </div>
 
+    </div>
+
+    {{-- MODAL PARA CV --}}
+    <div 
+        x-show="showCvModal"
+        x-transition
+        class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-4xl p-4 relative">
+
+            <button 
+                @click="showCvModal = false"
+                class="absolute top-3 right-3 text-gray-600 hover:text-gray-900 text-xl"
+            >
+                ✕
+            </button>
+
+            <h2 class="text-xl font-semibold mb-4">Currículum del candidato</h2>
+
+            <iframe 
+                :src="cvUrl"
+                class="w-full h-[70vh] border rounded-lg"
+            ></iframe>
+        </div>
     </div>
 
 </div>

@@ -119,5 +119,20 @@ class EmpresaOfertaController extends Controller
             ->with('success', 'Oferta actualizada correctamente.');
     }
 
+    public function postulaciones(Oferta $oferta)
+    {
+        if ($oferta->idempresa !== auth()->user()->empresa->id) {
+            abort(403);
+        }
+
+        return $oferta->candidatos()
+            ->with('user')
+            ->get();
+    }
+
+
+
+
+
 
 }

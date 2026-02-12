@@ -42,13 +42,13 @@
 
                     {{-- Estado --}}
                     <span class="
-                        px-3 py-1 rounded-full text-sm font-medium
-                        @if($oferta->estado === 'publicada') bg-green-100 text-green-700
-                        @elseif($oferta->estado === 'pausada') bg-yellow-100 text-yellow-700
-                        @elseif($oferta->estado === 'cerrada') bg-red-100 text-red-700
-                        @else bg-gray-100 text-gray-700
-                        @endif
-                    ">
+                                px-3 py-1 rounded-full text-sm font-medium
+                                @if($oferta->estado === 'publicada') bg-green-100 text-green-700
+                                @elseif($oferta->estado === 'pausada') bg-yellow-100 text-yellow-700
+                                @elseif($oferta->estado === 'cerrada') bg-red-100 text-red-700
+                                @else bg-gray-100 text-gray-700
+                                @endif
+                            ">
                         {{ ucfirst($oferta->estado) }}
                     </span>
                 </div>
@@ -57,10 +57,41 @@
                 <div class="mt-4 flex justify-between items-center text-sm text-gray-500">
                     <span>Publicada el {{ $oferta->created_at->format('d/m/Y') }}</span>
 
-                    <a href="{{ route('empresa.ofertas.edit', $oferta) }}"
-                       class="text-indigo-600 hover:text-indigo-800 font-medium">
-                        Editar
-                    </a>
+                    <div class="flex gap-4">
+                        <a href="{{ route('empresa.ofertas.edit', $oferta) }}"
+                            class="text-indigo-600 hover:text-indigo-800 font-medium">
+                            Editar
+                        </a>
+
+                        {{-- Botón ver postulaciones --}}
+                        <button
+                            @click="open === {{ $oferta->id }} ? open = null : (open = {{ $oferta->id }}, loadPostulaciones({{ $oferta->id }}))"
+                            class="text-indigo-600 hover:text-indigo-800 font-medium">
+                            Ver postulaciones
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Acordeón --}}
+                <div x-show="open === {{ $oferta->id }}" x-transition class="mt-4 border-t pt-4">
+                    <template x-for="post in postulaciones[{{ $oferta->id }}]" :key="post.id">
+                        <div class="p-4 border rounded-lg bg-gray-50 flex justify-between items-center">
+                            <div>
+                                <p class="font-semibold text-gray-800" x-text="post.user.name"></p>
+                                <p class="text-gray-600 text-sm" x-text="post.user.email"></p>
+                            </div>
+
+                            <button @click="openCv(post.cv_url)" class="text-indigo-600 hover:text-indigo-800 font-medium">
+                                Ver CV
+                            </button>
+                        </div>
+                    </template>
+
+
+                    <p x-if="postulaciones[{{ $oferta->id }}] && postulaciones[{{ $oferta->id }}].length === 0"
+                        class="text-gray-500 italic">
+                        No hay postulaciones todavía.
+                    </p>
                 </div>
 
             </div>
