@@ -1,3 +1,7 @@
+@php
+    $user = auth()->user();
+@endphp
+
 <div class="max-w-4xl mx-auto">
 
     <h1 class="text-3xl font-bold mb-6 text-center">
@@ -37,12 +41,16 @@
 
             <div>
                 <label class="block font-medium">Persona de contacto</label>
-                <input type="text" name="persona_contacto" value="{{ old('persona_contacto') }}" class="w-full border-gray-300 rounded-md">
+                <input type="text" name="persona_contacto"
+                       value="{{ old('persona_contacto', $user?->name) }}"
+                       class="w-full border-gray-300 rounded-md">
             </div>
 
             <div>
                 <label class="block font-medium">Email de contacto</label>
-                <input type="email" name="email_contacto" value="{{ old('email_contacto') }}" class="w-full border-gray-300 rounded-md">
+                <input type="email" name="email_contacto"
+                       value="{{ old('email_contacto', $user?->email) }}"
+                       class="w-full border-gray-300 rounded-md">
             </div>
 
             <div>

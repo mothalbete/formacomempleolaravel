@@ -30,6 +30,13 @@ class EmpresaRegisterController extends Controller
 
         $user = auth()->user();
 
+        // 🔥 ASIGNAR ROL AL USUARIO
+        $user->role = 'empresa';
+        $user->save();
+
+        // 🔥 REFRESCAR SESIÓN PARA EVITAR REDIRECCIÓN AL LOGIN
+        auth()->login($user);
+
         // Crear registro en la tabla empresa
         $empresa = new Empresa();
         $empresa->user_id = $user->id;

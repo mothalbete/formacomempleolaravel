@@ -41,9 +41,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // EMPRESA: formulario extra
+    // EMPRESA: formulario extra (CORREGIDO → pasamos $user)
     Route::get('/empresa/register-extra', function () {
-        return view('auth.register-empresa-extra');
+        return view('auth.register-empresa-extra', [
+            'user' => auth()->user()
+        ]);
     })->name('empresa.register.extra');
 
     Route::post('/empresa/register-extra', [EmpresaRegisterController::class, 'storeExtra'])
@@ -125,30 +127,24 @@ Route::middleware(['auth', 'verified', 'role:empresa'])->group(function () {
         [EmpresaOfertaController::class, 'postulaciones']
     )->name('empresa.ofertas.postulaciones');
 
-
 });
 
 
 // CANDIDATO
 Route::middleware(['auth', 'verified', 'role:candidato'])->group(function () {
 
-    // Dashboard candidato (CORREGIDO)
     Route::get('/candidato', [CandidatoDashboardController::class, 'index'])
         ->name('candidato.dashboard');
 
-    // Actualizar perfil
     Route::put('/candidato/perfil', [CandidatoPerfilController::class, 'update'])
         ->name('candidato.perfil.update');
 
-    // Ofertas disponibles
     Route::get('/candidato/ofertas', [CandidatoOfertaController::class, 'index'])
         ->name('candidato.ofertas');
 
-    // Inscribirse
     Route::post('/candidato/ofertas/{id}/inscribirse', [CandidatoOfertaController::class, 'inscribirse'])
         ->name('candidato.inscribirse');
 
-    // Retirarse
     Route::delete('/candidato/ofertas/{id}/retirarse', [CandidatoOfertaController::class, 'retirarse'])
         ->name('candidato.retirarse');
 });

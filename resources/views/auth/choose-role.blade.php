@@ -25,9 +25,18 @@
         >
             <h1 class="text-3xl font-bold text-center mb-6">Elige tu tipo de cuenta</h1>
 
-            <p class="text-center text-gray-600 mb-12">
+            <p class="text-center text-gray-600 mb-6">
                 Cuéntanos cómo quieres usar la plataforma para ofrecerte la mejor experiencia.
             </p>
+
+            {{-- 🔙 BOTÓN PARA VOLVER A LA LANDING --}}
+            <div class="text-center mb-10">
+                <a href="{{ route('welcome') }}"
+                   class="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 
+                          rounded-md shadow-sm text-gray-700 text-sm transition">
+                    ← Volver a la página principal
+                </a>
+            </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
 
