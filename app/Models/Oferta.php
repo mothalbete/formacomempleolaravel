@@ -66,6 +66,7 @@ class Oferta extends Model
             'candidato_oferta',
             'oferta_id',
             'candidato_id'
-        )->withTimestamps();
+        )->withPivot('estado')
+        ->withTimestamps();
     }
 }

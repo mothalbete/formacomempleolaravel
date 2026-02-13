@@ -1,15 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminController;
+
+use App\Http\Controllers\AdminDashboardController;
+use App\Http\Controllers\AdminActionsController;
+
 use App\Http\Controllers\EmpresaRegisterController;
 use App\Http\Controllers\CandidatoRegisterController;
+
 use App\Http\Controllers\EmpresaDashboardController;
 use App\Http\Controllers\EmpresaOfertaController;
 use App\Http\Controllers\EmpresaPerfilController;
+
 use App\Http\Controllers\CandidatoPerfilController;
 use App\Http\Controllers\CandidatoOfertaController;
 use App\Http\Controllers\CandidatoDashboardController;
+
 
 // -----------------------------------------------------
 // 0. LANDING
@@ -41,7 +47,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    // EMPRESA: formulario extra (CORREGIDO → pasamos $user)
+    // EMPRESA: formulario extra
     Route::get('/empresa/register-extra', function () {
         return view('auth.register-empresa-extra', [
             'user' => auth()->user()
@@ -76,10 +82,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         }
 
         return match ($user->role) {
-            'admin' => redirect()->route('admin.dashboard'),
-            'empresa' => redirect()->route('empresa.dashboard'),
+            'admin'     => redirect()->route('admin.dashboard'),
+            'empresa'   => redirect()->route('empresa.dashboard'),
             'candidato' => redirect()->route('candidato.dashboard'),
-            default => abort(403),
+            default     => abort(403),
         };
     })->name('dashboard');
 });
@@ -89,14 +95,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // 4. RUTAS PROTEGIDAS POR ROL
 // -----------------------------------------------------
 
+// ===========================
 // ADMIN
+// ===========================
 Route::middleware(['auth', 'verified', 'role:admin'])->group(function () {
-    Route::get('/admin', [AdminController::class, 'dashboard'])
+
+    // Dashboard admin
+    Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
         ->name('admin.dashboard');
+
+    // Redirección por si alguien entra a /admin
+    Route::redirect('/admin', '/admin/dashboard');
+
+    /* ============================
+       ADMIN — EMPRESAS
+    ============================ */
+    Route::post('/admin/empresas/{id}/validar', [AdminActionsController::class, 'validarEmpresa'])
+        ->name('admin.empresas.validar');
+
+    Route::post('/admin/empresas/{id}/rechazar', [AdminActionsController::class, 'rechazarEmpresa'])
+        ->name('admin.empresas.rechazar');
+
+    /* ============================
+       ADMIN — OFERTAS
+    ============================ */
+    Route::post('/admin/ofertas/{id}/validar', [AdminActionsController::class, 'validarOferta'])
+        ->name('admin.ofertas.validar');
+
+    Route::post('/admin/ofertas/{id}/rechazar', [AdminActionsController::class, 'rechazarOferta'])
+        ->name('admin.ofertas.rechazar');
 });
 
 
+// ===========================
 // EMPRESA
+// ===========================
 Route::middleware(['auth', 'verified', 'role:empresa'])->group(function () {
 
     Route::get('/empresa/dashboard', [EmpresaDashboardController::class, 'index'])
@@ -122,15 +155,20 @@ Route::middleware(['auth', 'verified', 'role:empresa'])->group(function () {
     Route::put('/empresa/ofertas/{oferta}', [EmpresaOfertaController::class, 'update'])
         ->name('empresa.ofertas.update');
 
-    Route::get(
-        '/empresa/ofertas/{oferta}/postulaciones',
-        [EmpresaOfertaController::class, 'postulaciones']
-    )->name('empresa.ofertas.postulaciones');
+    Route::get('/empresa/ofertas/{oferta}/postulaciones', [EmpresaOfertaController::class, 'postulaciones'])
+        ->name('empresa.ofertas.postulaciones');
 
+    Route::post('/empresa/ofertas/{oferta}/rechazar/{candidato}', [EmpresaOfertaController::class, 'rechazar'])
+        ->name('empresa.ofertas.rechazar');
+
+    Route::post('/empresa/ofertas/{oferta}/aceptar/{candidato}', [EmpresaOfertaController::class, 'aceptar'])
+        ->name('empresa.ofertas.aceptar');
 });
 
 
+// ===========================
 // CANDIDATO
+// ===========================
 Route::middleware(['auth', 'verified', 'role:candidato'])->group(function () {
 
     Route::get('/candidato', [CandidatoDashboardController::class, 'index'])

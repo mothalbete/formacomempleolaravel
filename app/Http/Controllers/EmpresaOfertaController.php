@@ -127,8 +127,39 @@ class EmpresaOfertaController extends Controller
 
         return $oferta->candidatos()
             ->with('user')
+            ->select('candidatos.*', 'candidato_oferta.estado')
             ->get();
     }
+
+    public function rechazar(Oferta $oferta, $candidatoId)
+    {
+        if ($oferta->idempresa !== auth()->user()->empresa->id) {
+            abort(403);
+        }
+
+        $oferta->candidatos()->updateExistingPivot($candidatoId, [
+            'estado' => 'rechazado'
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+
+    public function aceptar(Oferta $oferta, $candidatoId)
+    {
+        if ($oferta->idempresa !== auth()->user()->empresa->id) {
+            abort(403);
+        }
+
+        $oferta->candidatos()->updateExistingPivot($candidatoId, [
+            'estado' => 'aceptado'
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
+
+
 
 
 

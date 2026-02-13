@@ -13,7 +13,7 @@
         </p>
     </header>
 
-    {{-- Pestañas estilo tarjetas (como en empresa) --}}
+    {{-- Pestañas estilo tarjetas --}}
     <nav class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
 
         {{-- PERFIL --}}
@@ -54,7 +54,7 @@
 
     </nav>
 
-    {{-- CONTENIDO (igual que en empresa) --}}
+    {{-- CONTENIDO --}}
     <div class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
 
         {{-- PERFIL --}}

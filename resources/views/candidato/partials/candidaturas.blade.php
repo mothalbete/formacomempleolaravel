@@ -1,136 +1,93 @@
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8"
+     x-data="{ tab: 'pendientes' }">
 
     <h3 class="text-2xl font-bold text-gray-900 mb-8">Mis candidaturas</h3>
 
-    @if ($candidaturas->isEmpty())
+    {{-- Si no hay ninguna candidatura --}}
+    @if ($misCandidaturas->isEmpty())
         <p class="text-gray-600">Todavía no te has inscrito en ninguna oferta.</p>
     @else
-        <div class="space-y-5">
 
-            @foreach ($candidaturas as $oferta)
-                <div x-data="{ open: false }" class="border border-gray-300 rounded-xl overflow-hidden bg-gray-50 shadow-sm">
+        {{-- BOTONES DE CARPETAS --}}
+        <div class="flex gap-4 mb-8">
 
-                    {{-- CABECERA DEL ACORDEÓN --}}
-                    <button @click="open = !open"
-                        class="w-full flex justify-between items-center p-4 bg-gray-100 hover:bg-gray-200 transition">
+            {{-- Pendientes --}}
+            <button 
+                @click="tab = 'pendientes'"
+                :class="tab === 'pendientes' 
+                    ? 'bg-indigo-600 text-white' 
+                    : 'bg-gray-200 text-gray-700'"
+                class="px-4 py-2 rounded-lg font-medium flex items-center gap-2"
+            >
+                Pendientes
+                <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-white text-indigo-700">
+                    {{ $pendientes->count() }}
+                </span>
+            </button>
 
-                        <div class="text-left">
-                            <h4 class="text-lg font-semibold text-gray-900">
-                                {{ $oferta->titulo }}
-                            </h4>
+            {{-- Aceptadas --}}
+            <button 
+                @click="tab = 'aceptadas'"
+                :class="tab === 'aceptadas' 
+                    ? 'bg-indigo-600 text-white' 
+                    : 'bg-gray-200 text-gray-700'"
+                class="px-4 py-2 rounded-lg font-medium flex items-center gap-2"
+            >
+                Aceptadas
+                <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-white text-indigo-700">
+                    {{ $aceptadas->count() }}
+                </span>
+            </button>
 
-                            <p class="text-gray-600 text-xs mt-1">
-                                {{ $oferta->puesto->nombre ?? 'Puesto no especificado' }} ·
-                                {{ $oferta->ubicacion }}
-                            </p>
-                        </div>
-
-                        {{-- ICONOS DEFINITIVOS (no se inflan nunca) --}}
-                        <svg x-show="!open" style="width:16px;height:16px;flex-shrink:0;flex-grow:0;flex-basis:auto;"
-                            class="text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
-                        </svg>
-
-                        <svg x-show="open" style="width:16px;height:16px;flex-shrink:0;flex-grow:0;flex-basis:auto;"
-                            class="text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
-                        </svg>
-                    </button>
-
-                    {{-- CONTENIDO --}}
-                    <div x-show="open" x-collapse class="p-5 bg-white text-sm">
-
-                        {{-- Empresa --}}
-                        <div class="mb-3">
-                            <p class="text-xs text-gray-500">Empresa</p>
-                            <p class="font-medium text-gray-800">
-                                {{ $oferta->empresa->nombre }}
-                            </p>
-                        </div>
-
-                        {{-- Salario --}}
-                        <div class="mb-3">
-                            <p class="text-xs text-gray-500">Salario</p>
-                            <p class="font-medium text-gray-800">
-                                @if ($oferta->salario_min && $oferta->salario_max)
-                                    {{ $oferta->salario_min }}€ - {{ $oferta->salario_max }}€
-                                @else
-                                    A convenir
-                                @endif
-                            </p>
-                        </div>
-
-                        {{-- Tipo de contrato --}}
-                        <div class="mb-3">
-                            <p class="text-xs text-gray-500">Tipo de contrato</p>
-                            <p class="font-medium text-gray-800">
-                                {{ $oferta->tipo_contrato ?? 'No especificado' }}
-                            </p>
-                        </div>
-
-                        {{-- Jornada --}}
-                        <div class="mb-3">
-                            <p class="text-xs text-gray-500">Jornada</p>
-                            <p class="font-medium text-gray-800">
-                                {{ $oferta->jornada ?? 'No especificada' }}
-                            </p>
-                        </div>
-
-                        {{-- Descripción --}}
-                        <div class="mb-3">
-                            <p class="text-xs text-gray-500">Descripción</p>
-                            <p class="text-gray-800 whitespace-pre-line">
-                                {{ $oferta->descripcion }}
-                            </p>
-                        </div>
-
-                        {{-- Requisitos --}}
-                        @if ($oferta->requisitos)
-                            <div class="mb-3">
-                                <p class="text-xs text-gray-500">Requisitos</p>
-                                <p class="text-gray-800 whitespace-pre-line">
-                                    {{ $oferta->requisitos }}
-                                </p>
-                            </div>
-                        @endif
-
-                        {{-- Funciones --}}
-                        @if ($oferta->funciones)
-                            <div class="mb-3">
-                                <p class="text-xs text-gray-500">Funciones</p>
-                                <p class="text-gray-800 whitespace-pre-line">
-                                    {{ $oferta->funciones }}
-                                </p>
-                            </div>
-                        @endif
-
-                        {{-- Fecha de incorporación --}}
-                        @if ($oferta->fecha_incorporacion)
-                            <div class="mb-3">
-                                <p class="text-xs text-gray-500">Fecha de incorporación</p>
-                                <p class="font-medium text-gray-800">
-                                    {{ $oferta->fecha_incorporacion->format('d/m/Y') }}
-                                </p>
-                            </div>
-                        @endif
-
-                        {{-- Botón retirarse --}}
-                        <form method="POST" action="{{ route('candidato.retirarse', $oferta->id) }}" class="mt-4">
-                            @csrf
-                            @method('DELETE')
-                            <button
-                                class="px-4 py-2 bg-red-600 text-white rounded-xl shadow hover:bg-red-700 transition text-xs">
-                                Retirarme
-                            </button>
-                        </form>
-
-
-                    </div>
-
-                </div>
-            @endforeach
+            {{-- Rechazadas --}}
+            <button 
+                @click="tab = 'rechazadas'"
+                :class="tab === 'rechazadas' 
+                    ? 'bg-indigo-600 text-white' 
+                    : 'bg-gray-200 text-gray-700'"
+                class="px-4 py-2 rounded-lg font-medium flex items-center gap-2"
+            >
+                Rechazadas
+                <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-white text-indigo-700">
+                    {{ $rechazadas->count() }}
+                </span>
+            </button>
 
         </div>
+
+        {{-- LISTA DE PENDIENTES --}}
+        <div x-show="tab === 'pendientes'" class="space-y-5">
+            @foreach ($pendientes as $oferta)
+                @include('candidato.partials.candidatura-acordeon', ['oferta' => $oferta])
+            @endforeach
+
+            @if ($pendientes->isEmpty())
+                <p class="text-gray-500 italic">No tienes candidaturas pendientes.</p>
+            @endif
+        </div>
+
+        {{-- LISTA DE ACEPTADAS --}}
+        <div x-show="tab === 'aceptadas'" class="space-y-5">
+            @foreach ($aceptadas as $oferta)
+                @include('candidato.partials.candidatura-acordeon', ['oferta' => $oferta])
+            @endforeach
+
+            @if ($aceptadas->isEmpty())
+                <p class="text-gray-500 italic">No tienes candidaturas aceptadas.</p>
+            @endif
+        </div>
+
+        {{-- LISTA DE RECHAZADAS --}}
+        <div x-show="tab === 'rechazadas'" class="space-y-5">
+            @foreach ($rechazadas as $oferta)
+                @include('candidato.partials.candidatura-acordeon', ['oferta' => $oferta])
+            @endforeach
+
+            @if ($rechazadas->isEmpty())
+                <p class="text-gray-500 italic">No tienes candidaturas rechazadas.</p>
+            @endif
+        </div>
+
     @endif
 
 </div>

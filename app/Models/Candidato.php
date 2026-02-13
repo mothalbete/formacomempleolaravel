@@ -31,7 +31,8 @@ class Candidato extends Model
             'candidato_oferta',
             'candidato_id',
             'oferta_id'
-        )->withTimestamps();
+            )->withPivot('estado')
+            ->withTimestamps();
     }
 
     public function getCvUrlAttribute()

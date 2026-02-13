@@ -26,11 +26,7 @@ class Empresa extends Model
         'ciudad',
         'provincia',
         'logo',
-        'verificada',
-    ];
-
-    protected $casts = [
-        'verificada' => 'boolean',
+        'estado',
     ];
 
     public function sectores()

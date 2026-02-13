@@ -15,13 +15,61 @@
             fetch(`/empresa/ofertas/${id}/postulaciones`)
                 .then(res => res.json())
                 .then(data => {
-                    this.postulaciones[id] = data;
+                    this.postulaciones[id] = {
+                        pendientes: data.filter(p => p.estado === 'pendiente'),
+                        aceptados: data.filter(p => p.estado === 'aceptado'),
+                        rechazados: data.filter(p => p.estado === 'rechazado')
+                    };
                 });
         },
 
         openCv(url) {
             this.cvUrl = url;
             this.showCvModal = true;
+        },
+
+        rechazarCandidato(ofertaId, candidatoId) {
+            fetch(`/empresa/ofertas/${ofertaId}/rechazar/${candidatoId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                }
+            })
+            .then(res => res.json())
+            .then(() => {
+                const pendientes = this.postulaciones[ofertaId].pendientes;
+                const rechazados = this.postulaciones[ofertaId].rechazados;
+
+                const candidato = pendientes.find(p => p.id === candidatoId);
+
+                this.postulaciones[ofertaId].pendientes =
+                    pendientes.filter(p => p.id !== candidatoId);
+
+                candidato.estado = 'rechazado';
+                rechazados.push(candidato);
+            });
+        },
+
+        aceptarCandidato(ofertaId, candidatoId) {
+            fetch(`/empresa/ofertas/${ofertaId}/aceptar/${candidatoId}`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
+                }
+            })
+            .then(res => res.json())
+            .then(() => {
+                const pendientes = this.postulaciones[ofertaId].pendientes;
+                const aceptados = this.postulaciones[ofertaId].aceptados;
+
+                const candidato = pendientes.find(p => p.id === candidatoId);
+
+                this.postulaciones[ofertaId].pendientes =
+                    pendientes.filter(p => p.id !== candidatoId);
+
+                candidato.estado = 'aceptado';
+                aceptados.push(candidato);
+            });
         }
     }"
 >

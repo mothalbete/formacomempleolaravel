@@ -1,26 +1,78 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Administrador') }}
-        </h2>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <!--Numero de usuarios registrados userCount-->
-                <div class="p-6 sm:px-20 bg-white border-b border-gray-200">
-                    <div class="mt-8 text-2xl">
-                        Bienvenido al panel de administración
-                    </div>
+<div 
+    class="max-w-7xl mx-auto py-14 px-6 md:px-10"
+    x-data="{ tab: 'empresas' }"
+>
 
-                    <div class="mt-6 text-gray-500">
-                        Aquí puedes gestionar usuarios, ofertas de empleo y revisar estadísticas.
-                    </div>
+    <header class="space-y-3 mb-10">
+        <h1 class="text-4xl font-bold text-gray-900">Panel de Administración</h1>
+        <p class="text-gray-600 text-lg max-w-3xl">
+            Gestiona empresas, ofertas y usuarios de la plataforma.
+        </p>
+    </header>
 
-                    <div class="mt-6 text-gray-500">
-                        Número total de usuarios registrados: {{ $userCount }}
-                    </div>
-                </div>
-            </div>
+    {{-- PESTAÑAS --}}
+    <nav class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+
+        {{-- EMPRESAS --}}
+        <button 
+            @click="tab = 'empresas'"
+            :class="tab === 'empresas' 
+                ? 'bg-indigo-600 text-white shadow-lg' 
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'"
+            class="p-4 rounded-xl text-lg font-semibold transition text-left"
+        >
+            Empresas
+            <p class="text-sm font-normal opacity-80">Validación y gestión de empresas.</p>
+        </button>
+
+        {{-- OFERTAS --}}
+        <button 
+            @click="tab = 'ofertas'"
+            :class="tab === 'ofertas' 
+                ? 'bg-indigo-600 text-white shadow-lg' 
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'"
+            class="p-4 rounded-xl text-lg font-semibold transition text-left"
+        >
+            Ofertas
+            <p class="text-sm font-normal opacity-80">Validación de ofertas publicadas.</p>
+        </button>
+
+        {{-- USUARIOS --}}
+        <button 
+            @click="tab = 'usuarios'"
+            :class="tab === 'usuarios' 
+                ? 'bg-indigo-600 text-white shadow-lg' 
+                : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'"
+            class="p-4 rounded-xl text-lg font-semibold transition text-left"
+        >
+            Usuarios
+            <p class="text-sm font-normal opacity-80">Candidatos y empresas registradas.</p>
+        </button>
+
+    </nav>
+
+    {{-- CONTENIDO --}}
+    <div class="bg-white rounded-2xl shadow-sm p-8 border border-gray-100">
+
+        {{-- EMPRESAS --}}
+        <div x-show="tab === 'empresas'" x-transition>
+            @include('admin.partials.empresas')
+        </div>
+
+        {{-- OFERTAS --}}
+        <div x-show="tab === 'ofertas'" x-transition>
+            @include('admin.partials.ofertas')
+        </div>
+
+        {{-- USUARIOS --}}
+        <div x-show="tab === 'usuarios'" x-transition>
+            @include('admin.partials.usuarios')
+        </div>
+
+    </div>
+
+</div>
+
 </x-app-layout>
